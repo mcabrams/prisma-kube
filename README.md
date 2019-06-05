@@ -66,6 +66,22 @@ Open server in browser
 minikube service -n prisma server
 ```
 
+## Installing new packages or using CLI to adjust what gets included in prisma image
+```sh
+cd server/
+docker-compose build
+docker-compose up -d
+```
+
+
+To perform actions inside container:
+```
+docker-compose run server /bin/sh
+```
+
+Open http://localhost:4666/graphql
+
+
 ## Running Tests
 ```sh
 #TODO

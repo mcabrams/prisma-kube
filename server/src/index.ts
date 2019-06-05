@@ -1,13 +1,26 @@
-import { GraphQLServer } from 'graphql-yoga'
-import { prisma } from './generated/prisma-client'
-import resolvers from './resolvers'
+import express from 'express';
+import { ApolloServer, gql } from 'apollo-server-express';
+import compression from 'compression';
 
-const server = new GraphQLServer({
-  typeDefs: './src/schema.graphql',
-  resolvers,
-  context: request => ({
-    ...request,
-    prisma,
-  }),
-})
-server.start(() => console.log(`Server is running on http://localhost:4000`))
+// Construct a schema, using GraphQL schema language
+const typeDefs = gql`
+  type Query {
+    hello: String
+  }
+`;
+
+// Provide resolver functions for your schema fields
+const resolvers = {
+  Query: {
+    hello: () => 'Hello world!',
+  },
+};
+
+const server = new ApolloServer({ typeDefs, resolvers });
+
+const app = express();
+server.applyMiddleware({ app });
+app.use(compression());
+app.listen({ port: 4000 }, () =>
+  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+);

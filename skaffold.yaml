@@ -1,0 +1,24 @@
+apiVersion: skaffold/v1beta11
+kind: Config
+build:
+  artifacts:
+  - image: gcr.io/prisma-kube/prisma-kube-server
+    context: server
+    sync:
+      manual:
+      # Sync all the javascript files that are in the src folder
+      # with the container src folder
+      - src: 'src/**/*'
+        dest: .
+deploy:
+  kubectl:
+    manifests:
+    - database/configmap.yml
+    - database/deployment.yml
+    - database/pvc.yml
+    - database/service.yml
+    - namespace.yaml
+    - prisma/configmap.yml
+    - prisma/deployment.yaml
+    - server/deployment.yml
+    - server/service.yml
