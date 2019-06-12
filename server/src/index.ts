@@ -10,6 +10,8 @@ let links = [{
   description: 'hi',
 }];
 
+let idCount = links.length;
+
 type Link = {
   id: string;
   description: string;
@@ -23,12 +25,49 @@ const resolvers = {
   Query: {
     hello: () => 'hi!',
     feed: () => links,
+    link: (parent: null, args: Pick<Link, 'id'>) => {
+      return links.find(link => link.id === args.id);
+    }
   },
-  Link: {
-    id: (parent: Link) => parent.id,
-    description: (parent: Link) => parent.description,
-    url: (parent: Link) => parent.url,
-  }
+  Mutation: {
+    post: (
+      parent: null,
+      { description, url }: Pick<Link, 'description' | 'url'>,
+    ) => {
+      const link = {
+        description,
+        url,
+        id: `link-${idCount++}`
+      };
+      links.push(link);
+      return link;
+    },
+    updateLink: (
+      parent: null,
+      args: { id: string, url?: string, description?: string },
+    ) => {
+      const link = links.find(link => link.id === args.id);
+      if (!link) {
+        return;
+      }
+      const { id, ...updatedLinkArgs } = args;
+      const updatedLink = { ...link, ...updatedLinkArgs };
+      links = links.filter(link => link.id !== args.id);
+      links.push(updatedLink);
+      return updatedLink;
+    },
+    deleteLink: (
+      parent: null,
+      args: { id: string },
+    ) => {
+      const link = links.find(link => link.id === args.id);
+      if (!link) {
+        return;
+      }
+      links = links.filter(link => link.id !== args.id);
+      return link;
+    }
+  },
 };
 
 const schema = makeExecutableSchema({ typeDefs, resolvers })
