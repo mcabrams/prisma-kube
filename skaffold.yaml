@@ -13,12 +13,13 @@ build:
 deploy:
   kubectl:
     manifests:
+    - namespace.yaml
     - database/configmap.yml
     - database/deployment.yml
     - database/pvc.yml
     - database/service.yml
-    - namespace.yaml
     - prisma/configmap.yml
     - prisma/deployment.yaml
+    - prisma/service.yml
     - server/deployment.yml
     - server/service.yml

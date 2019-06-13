@@ -61,6 +61,29 @@ kubectl apply -f ./database/
 kubectl apply -f ./prisma/
 ```
 
+Find the pod to exec prisma deploy and generate
+
+```sh
+kubectl get pods -n prisma
+```
+
+Which will return something like
+
+```sh
+NAME                        READY   STATUS    RESTARTS   AGE
+database-657f469468-frg5j   1/1     Running   0          3h49m
+prisma-6d4fbf99b4-6t29g     1/1     Running   0          3h49m
+server-5b9454995c-pr8pf     1/1     Running   0          5m42s
+```
+
+Then exec sh on server pod and deploy prisma
+
+```sh
+kubectl exec -it -n prisma server-5b9454995c-pr8pf /bin/sh
+./node_modules/.bin/prisma deploy
+./node_modules/.bin/prisma generate
+```
+
 Open server in browser
 ```sh
 minikube service -n prisma server
@@ -72,7 +95,6 @@ cd server/
 docker-compose build
 docker-compose up -d
 ```
-
 
 To perform actions inside container:
 ```

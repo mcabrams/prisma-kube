@@ -1,0 +1,6 @@
+endpoint: http://prisma:4466/app/production
+datamodel: datamodel.prisma
+secret: Hfu26YYXw3DJrx
+generate:
+  - generator: typescript-client
+    output: ./src/generated/prisma-client
