@@ -76,18 +76,40 @@ prisma-6d4fbf99b4-6t29g     1/1     Running   0          3h49m
 server-5b9454995c-pr8pf     1/1     Running   0          5m42s
 ```
 
-Then exec sh on server pod and deploy prisma
+Port forward the prisma instance
 
+`kubectl port-forward -n prisma <the-pod-name> 4467:4466` – This will
+forward from `127.0.0.1:4467` -> `kubernetes-cluster:4466`
+
+The Prisma server is now reachable via `http://localhost:4467`. This is the
+actual `endpoint` we have specified in `.local.env`. We can now deploy
+`prisma` and deploy to stage `production`, at:
+`http://localhost:4467/prisma/production`.
+
+If you haven't already, install prisma on host:
 ```sh
-kubectl exec -it -n prisma server-5b9454995c-pr8pf /bin/sh
-./node_modules/.bin/prisma deploy
-./node_modules/.bin/prisma generate
+npm install -g prisma
 ```
+
+With this in place, we can deploy the Prisma service via the Prisma CLI
+(`cd server; prisma deploy -e .local.env`) as long as the port
+forwarding to the cluster is active.`
+
+<!-- Then exec sh on server pod and deploy prisma -->
+
+<!-- ```sh -->
+<!-- kubectl exec -it -n prisma server-5b9454995c-pr8pf /bin/sh -->
+<!-- ./node_modules/.bin/prisma deploy -->
+<!-- ./node_modules/.bin/prisma generate -->
+<!-- ``` -->
+
 
 Open server in browser
 ```sh
 minikube service -n prisma server
 ```
+
+You'll need to add /graphql to get to the graphql playground
 
 ## Installing new packages or using CLI to adjust what gets included in prisma image
 ```sh
