@@ -3,7 +3,11 @@ import { makeExecutableSchema } from 'graphql-tools'
 import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
 import compression from 'compression';
-import { prisma } from './generated/prisma-client';
+import { Prisma, prisma } from './generated/prisma-client';
+
+type Context = {
+  prisma: Prisma;
+}
 
 type Link = {
   id: string;
@@ -16,11 +20,10 @@ const typeDefs = importSchema(__dirname + '/schema.graphql');
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
-    hello: () => 'hi!',
-    feed: (root: any, args: any, context: any, info: any) => {
+    feed: (root: any, args: any, context: Context, info: any) => {
       return context.prisma.links();
     },
-    link: (parent: null, args: Pick<Link, 'id'>, context: any) => {
+    link: (parent: null, args: Pick<Link, 'id'>, context: Context) => {
       return context.prisma.link({
         id: args.id,
       });
@@ -30,7 +33,7 @@ const resolvers = {
     post: (
       root: any,
       { description, url }: Pick<Link, 'description' | 'url'>,
-      context: any,
+      context: Context,
     ) => {
       return context.prisma.createLink({
         description,
@@ -40,7 +43,7 @@ const resolvers = {
     updateLink: (
       parent: null,
       args: { id: string, url?: string, description?: string },
-      context: any,
+      context: Context,
     ) => {
       const { id, ...updatedLinkArgs } = args;
 
@@ -54,7 +57,7 @@ const resolvers = {
     deleteLink: (
       parent: null,
       args: { id: string },
-      context: any,
+      context: Context,
     ) => {
       return context.prisma.deleteLink({
         id: args.id,
