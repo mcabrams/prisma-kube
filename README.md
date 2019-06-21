@@ -126,6 +126,14 @@ docker-compose run server /bin/sh
 Open http://localhost:4666/graphql
 
 
+## Development Host Side
+
+If you want things like linting and typechecking to work on the host side,
+feel free to run `npm install` from host (in `server/`) directory on the host.
+It will generate node_modules, presumably identical to inside the server
+container, and won't overwrite those through skaffold nor docker compose.
+
+
 ## Running Tests
 ```sh
 #TODO
