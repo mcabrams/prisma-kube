@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 
 import {
   LinkCreateInput, LinkUpdateInput, User, UserCreateWithoutLinksInput,
-} from '../generated/prisma-client';
-import { Context } from '../types';
-import { APP_SECRET, getUserId } from '../utils';
+} from '@src/generated/prisma-client';
+import { Context } from '@src/types';
+import { APP_SECRET, getUserId } from '@src/utils';
 
 export const signup = async (
   parent: any, args: UserCreateWithoutLinksInput, context: Context,

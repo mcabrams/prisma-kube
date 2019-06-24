@@ -1,5 +1,5 @@
-import { Context } from '../types';
-import { LinkWhereUniqueInput } from '../generated/prisma-client';
+import { Context } from '@src/types';
+import { LinkWhereUniqueInput } from '@src/generated/prisma-client';
 
 export const feed = (root: any, args: null, context: Context) =>
   context.prisma.links();
