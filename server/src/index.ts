@@ -3,11 +3,14 @@ import { makeExecutableSchema } from 'graphql-tools'
 import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
 import compression from 'compression';
-import { Prisma, prisma } from './generated/prisma-client';
 
-type Context = {
-  prisma: Prisma;
-}
+import * as Query from './resolvers/Query';
+import * as Mutation from './resolvers/Mutation';
+import * as Link from './resolvers/Link';
+import * as User from './resolvers/User';
+import { Context } from './types';
+// TODO: Not sure why absolute path does not work here
+import { prisma } from './generated/prisma-client';
 
 type Link = {
   id: string;
@@ -19,58 +22,22 @@ const typeDefs = importSchema(__dirname + '/schema.graphql');
 
 // Provide resolver functions for your schema fields
 const resolvers = {
-  Query: {
-    feed: (root: any, args: any, context: Context, info: any) => {
-      return context.prisma.links();
-    },
-    link: (parent: null, args: Pick<Link, 'id'>, context: Context) => {
-      return context.prisma.link({
-        id: args.id,
-      });
-    }
-  },
-  Mutation: {
-    post: (
-      root: any,
-      { description, url }: Pick<Link, 'description' | 'url'>,
-      context: Context,
-    ) => {
-      return context.prisma.createLink({
-        description,
-        url,
-      });
-    },
-    updateLink: (
-      parent: null,
-      args: { id: string, url?: string, description?: string },
-      context: Context,
-    ) => {
-      const { id, ...updatedLinkArgs } = args;
-
-      return context.prisma.updateLink({
-        data: updatedLinkArgs,
-        where: {
-          id,
-        },
-      });
-    },
-    deleteLink: (
-      parent: null,
-      args: { id: string },
-      context: Context,
-    ) => {
-      return context.prisma.deleteLink({
-        id: args.id,
-      });
-    }
-  },
+  Query,
+  Mutation,
+  Link,
+  User,
 };
 
 const schema = makeExecutableSchema({ typeDefs, resolvers })
 
 const server = new ApolloServer({
   schema,
-  context: { prisma },
+  context: request => {
+    return {
+      ...request,
+      prisma,
+    };
+  },
 });
 
 const app = express();
