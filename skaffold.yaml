@@ -14,11 +14,6 @@ build:
       # Sync prisma.yml
       - src: 'src/prisma.yml'
         dest: ./
-
-      # Sync all the files that are in the src/generated/ folder
-      # with the container src folder
-      - src: 'src/generated/prisma-client/**/*'
-        dest: ./generated/prisma-client/
 deploy:
   kubectl:
     manifests:
