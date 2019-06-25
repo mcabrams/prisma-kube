@@ -1,3 +1,4 @@
+import http from 'http';
 import { importSchema } from 'graphql-import'
 import { makeExecutableSchema } from 'graphql-tools'
 import express from 'express';
@@ -7,6 +8,7 @@ import compression from 'compression';
 import * as Query from './resolvers/Query';
 import * as Mutation from './resolvers/Mutation';
 import * as Link from './resolvers/Link';
+import * as Subscription from './resolvers/Subscription';
 import * as User from './resolvers/User';
 import { Context } from './types';
 // TODO: Not sure why absolute path does not work here
@@ -24,6 +26,7 @@ const typeDefs = importSchema(__dirname + '/schema.graphql');
 const resolvers = {
   Query,
   Mutation,
+  Subscription,
   Link,
   User,
 };
@@ -43,6 +46,9 @@ const server = new ApolloServer({
 const app = express();
 server.applyMiddleware({ app });
 app.use(compression());
-app.listen({ port: 4000 }, () =>
-  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+
+const httpServer = http.createServer(app);
+server.installSubscriptionHandlers(httpServer);
+httpServer.listen({ port: 4000 }, () =>
+  console.log(`🚀 Server ready at path ${server.graphqlPath}`)
 );
