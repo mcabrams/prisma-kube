@@ -1,7 +1,7 @@
 import { importSchema } from 'graphql-import'
 import { makeExecutableSchema } from 'graphql-tools'
 import express from 'express';
-import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import compression from 'compression';
 
 import * as Query from './resolvers/Query';
