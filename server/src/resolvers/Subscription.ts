@@ -9,3 +9,13 @@ export const newLink = {
   // @ts-ignore TODO: type this
   resolve: payload => payload,
 };
+
+const newVoteSubscribe = (parent: null, args: null, context: Context) => {
+  return context.prisma.$subscribe.vote({ mutation_in: ['CREATED']}).node();
+};
+
+export const newVote = {
+  subscribe: newVoteSubscribe,
+  // @ts-ignore TODO: type this
+  resolve: payload => payload,
+};
