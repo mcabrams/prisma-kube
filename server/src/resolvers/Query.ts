@@ -1,11 +1,14 @@
 import { Context } from '@src/types';
-import { LinkWhereUniqueInput } from '@src/generated/prisma-client';
+import {
+  LinkOrderByInput, LinkWhereUniqueInput,
+} from '@src/generated/prisma-client';
 
 type FeedArgs = {
   filter?: string;
   skip?: number;
   first?: number;
-}
+  orderBy?: LinkOrderByInput;
+};
 
 export const feed = async (root: any, args: FeedArgs, context: Context) => {
   const where = args.filter ? {
@@ -18,9 +21,21 @@ export const feed = async (root: any, args: FeedArgs, context: Context) => {
     where,
     first: args.first,
     skip: args.skip,
+    orderBy: args.orderBy,
   });
-  return links;
-}
+
+  const count = await context.prisma
+    .linksConnection({
+      where,
+    })
+    .aggregate()
+    .count();
+
+  return {
+    links,
+    count,
+  };
+};
 
 export const link = (
   parent: null, args: LinkWhereUniqueInput, context: Context,
