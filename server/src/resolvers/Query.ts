@@ -1,9 +1,13 @@
 import { Context } from '@src/types';
 import { LinkWhereUniqueInput } from '@src/generated/prisma-client';
 
-export const feed = async (
-  root: any, args: {filter?: string;}, context: Context,
-) => {
+type FeedArgs = {
+  filter?: string;
+  skip?: number;
+  first?: number;
+}
+
+export const feed = async (root: any, args: FeedArgs, context: Context) => {
   const where = args.filter ? {
     OR: [
       {description_contains: args.filter},
@@ -12,6 +16,8 @@ export const feed = async (
   } : {};
   const links = await context.prisma.links({
     where,
+    first: args.first,
+    skip: args.skip,
   });
   return links;
 }
