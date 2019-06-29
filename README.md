@@ -109,9 +109,17 @@ Open server in browser
 minikube service -n prisma server
 ```
 
+Open client in browser
+```sh
+minikube service -n prisma client
+```
+
+
 You'll need to add /graphql to get to the graphql playground
 
 ## Installing new packages or using CLI to adjust what gets included in prisma image
+
+### Server
 ```sh
 cd server/
 docker-compose build
@@ -126,12 +134,27 @@ docker-compose run server /bin/sh
 Open http://localhost:4666/graphql
 
 
+### Client
+```sh
+cd client/
+docker-compose build
+docker-compose up -d
+```
+
+To perform actions inside container:
+```
+docker-compose run client /bin/sh
+```
+
+\# TODO
+
 ## Development Host Side
 
 If you want things like linting and typechecking to work on the host side,
-feel free to run `npm install` from host (in `server/`) directory on the host.
-It will generate node_modules, presumably identical to inside the server
-container, and won't overwrite those through skaffold nor docker compose.
+feel free to run `npm install` from host (in `server/` or `client/`) directory
+on the host.  It will generate node_modules, presumably identical to inside the
+server container, and won't overwrite those through skaffold nor docker
+compose.
 
 
 ## Running Tests
