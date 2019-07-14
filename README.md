@@ -49,7 +49,9 @@ Then deploy manifests either with kubectl or skaffold
 ### Option 1: skaffold
 
 ```sh
-skaffold dev
+# This first line is necessary to apply the name space
+kubectl apply -f .
+skaffold dev --port-forward
 ```
 
 ### Options 2: kubectl
@@ -60,6 +62,10 @@ kubectl apply -f ./server/
 kubectl apply -f ./database/
 kubectl apply -f ./prisma/
 ```
+
+Note: You can skip below if you opted for skaffold!
+
+------ SKIPPABLE W/ SKAFFOLD -------
 
 Find the pod to exec prisma deploy and generate
 
@@ -80,6 +86,8 @@ Port forward the prisma instance
 
 `kubectl port-forward -n prisma <the-pod-name> 4467:4466` – This will
 forward from `127.0.0.1:4467` -> `kubernetes-cluster:4466`
+
+------ END SKIPPABLE W/ SKAFFOLD -------
 
 The Prisma server is now reachable via `http://localhost:4467`. This is the
 actual `endpoint` we have specified in `.local.env`. We can now deploy

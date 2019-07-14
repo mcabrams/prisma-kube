@@ -1,4 +1,4 @@
-apiVersion: skaffold/v1beta11
+apiVersion: skaffold/v1beta12
 kind: Config
 build:
   artifacts:
@@ -6,13 +6,9 @@ build:
     context: server
     sync:
       manual:
-      # Sync all the files that are in the src folder
-      # with the container src folder
-      - src: 'src/**/*'
+      - src: src/**/*
         dest: .
-
-      # Sync prisma.yml
-      - src: 'src/prisma.yml'
+      - src: src/prisma.yml
         dest: ./
   - image: gcr.io/prisma-kube/prisma-kube-client
     context: client
@@ -31,3 +27,14 @@ deploy:
     - server/service.yml
     - client/deployment.yml
     - client/service.yml
+portForward:
+# - resourceType: Service
+  # resourceName:	server
+  # namespace: prisma
+  # port: 4000
+  # localPort: 4324
+- resourceType: Service
+  resourceName:	prisma
+  namespace: prisma
+  port: 4466
+  localPort: 4467

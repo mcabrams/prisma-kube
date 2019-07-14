@@ -6,11 +6,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   context: process.cwd(), // to automatically find tsconfig.json
-  entry: './src/index.ts',
+  entry: './src/index.tsx',
   devtool: 'inline-source-map',
   plugins: [
     new ForkTsCheckerWebpackPlugin({
-      tslint: true,
+      // tslint: true,
       useTypescriptIncrementalApi: true,
     }),
     new ForkTsCheckerNotifierWebpackPlugin({
@@ -35,6 +35,7 @@ module.exports = {
     ]
   },
   resolve: {
+    alias: { '@src': path.resolve(__dirname, "src") },
     extensions: [ '.tsx', '.ts', '.js' ]
   },
   output: {
@@ -45,6 +46,8 @@ module.exports = {
     clientLogLevel: 'warning',
     open: true,
     historyApiFallback: true,
-    stats: 'errors-only'
+    stats: 'errors-only',
+    host: '0.0.0.0',
+    port: 8080,
   },
 };
