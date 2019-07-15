@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/webpack-dev-server --progress --color --mode development --config webpack.config.development.js",
-    "build": "webpack --color --mode production --config webpack.config.production.js"
+    "start": "chmod +x ./env.sh && ./env.sh && cp env-config.js ./public/ && ./node_modules/.bin/webpack-dev-server --progress --color --mode development --config webpack.config.development.js",
+    "build": "chmod +x ./env.sh && ./env.sh && cp env-config.js ./public/ && webpack --color --mode production --config webpack.config.production.js"
   },
   "author": "",
   "license": "ISC",

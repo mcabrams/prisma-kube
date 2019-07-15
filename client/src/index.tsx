@@ -6,9 +6,10 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import { App } from '@src/components/App';
+import { env } from '@src/lib/env';
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000/graphql',
+  uri: env('API_SERVER_URL'),
 });
 
 const client = new ApolloClient({
@@ -22,5 +23,3 @@ ReactDOM.render(
   </ApolloProvider>,
   document.getElementById('root'),
 );
-
-console.log('hi');
