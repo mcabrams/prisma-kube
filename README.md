@@ -2,6 +2,17 @@
 > TODO
 
 ## Development Setup
+
+### Docker Compose
+
+```sh
+docker-compose build
+docker-compose up -d
+```
+
+
+### Kubernetes
+
 Set up kubernetes, minikube, etc.  Start minikube.
 
 Setup secret for access to private docker images.  Replace with path to
