@@ -21,7 +21,7 @@ type Link = {
   url: string;
 }
 
-const typeDefs = importSchema(__dirname + '/schema.graphql');
+const typeDefs = importSchema(__dirname + '/schema/schema.graphql');
 
 // Provide resolver functions for your schema fields
 const resolvers = {

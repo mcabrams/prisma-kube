@@ -1,33 +1,38 @@
 import React from 'react';
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
 
-import { Link } from '@src/components/Link';
-import { Link as LinkType } from '@src/types';
-
-const FEED_QUERY = gql`
-  {
-    feed {
-      links {
-        id
-        url
-        description
-      }
-    }
-  }
-`
-
-interface Data {
-  feed: {
-    links: Array<LinkType>;
-  };
-};
+import { FeedQuery } from '@src/queries/FeedQuery';
+import { Link, UpdateStoreAfterVoteFn } from '@src/components/Link';
+import { LinkListComponent, LinkListQuery } from '@src/generated/graphql';
 
 interface LinkListProps {}
 
-export const LinkList: React.SFC<LinkListProps> = props => {
+const updateCacheAfterVote: UpdateStoreAfterVoteFn =
+  (store, mutationResult, linkId) => {
+    const data = store.readQuery<LinkListQuery>({ query: FeedQuery });
+
+    // TODO: Should raise error here
+    if (!data) {
+      return;
+    }
+
+    const votedLink = data.feed.links.find(link => link.id === linkId);
+
+    // TODO: Should raise error here
+    if (!votedLink ||
+        !mutationResult ||
+        !mutationResult.data ||
+        !mutationResult.data.vote) {
+      return;
+    }
+
+    votedLink.votes = mutationResult.data.vote.link.votes;
+
+    store.writeQuery({ query: FeedQuery, data });
+  };
+
+export const LinkList: React.FC<LinkListProps> = props => {
   return (
-    <Query<Data> query={FEED_QUERY}>
+    <LinkListComponent>
       {({ loading, error, data }) => {
         if (loading) return <div>Fetching</div>;
         if (error) return <div>Error</div>;
@@ -37,10 +42,17 @@ export const LinkList: React.SFC<LinkListProps> = props => {
 
         return (
           <div>
-            {linksToRender.map(link => <Link key={link.id} link={link} />)}
+            {linksToRender.map((link, index) => (
+              <Link
+                key={link.id}
+                link={link}
+                index={index}
+                updateStoreAfterVote={updateCacheAfterVote}
+              />
+            ))}
           </div>
         );
       }}
-    </Query>
-  )
+    </LinkListComponent>
+  );
 };

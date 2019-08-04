@@ -1,3 +1,5 @@
+scalar DateTime
+
 type Query {
   feed(filter: String, skip: Int, first: Int, orderBy: LinkOrderByInput): Feed!
   link(id: ID!): Link
@@ -19,6 +21,7 @@ type Subscription {
 
 type Link {
   id: ID!
+  createdAt: DateTime!
   description: String!
   url: String!
   postedBy: User

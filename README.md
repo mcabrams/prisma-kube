@@ -175,6 +175,11 @@ on the host.  It will generate node_modules, presumably identical to inside the
 server container, and won't overwrite those through skaffold nor docker
 compose.
 
+Additionally, when developing for the client, you'll want to run
+`npm run generate` or `npm run generate:watch` on the host from the `client`
+directory to ensure that you can see the generated graphql-codegen files (which
+are excluded from syncing to host via use of a named volume).
+
 
 ## Running Tests
 ```sh

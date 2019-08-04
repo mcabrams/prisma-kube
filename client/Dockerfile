@@ -2,9 +2,10 @@
 FROM node:10-alpine as build-stage
 RUN apk add --no-cache bash
 WORKDIR /app
-COPY package*.json /app/
-RUN npm install
-COPY ./ /app/
+COPY ./client/package*.json /app/
+RUN yarn install
+COPY ./client/ /app/
+COPY ./server/src/schema/schema.graphql /app/schema/
 RUN npm run build
 
 # Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
