@@ -19,21 +19,22 @@ export type UpdateStoreAfterVoteFn = (
 type LinkProps = {
   link: LinkInfoFragment;
   index: number;
-  updateStoreAfterVote: UpdateStoreAfterVoteFn;
+  updateStoreAfterVote?: UpdateStoreAfterVoteFn;
 };
 
 export const Link: React.FC<LinkProps> = props => {
+  const { index, link, updateStoreAfterVote } = props;
   const authToken = getAuthToken();
   const voteForLink = () => {};
   return (
     <div className="flex mt2 items-start">
       <div className="flex items-center">
-        <span className="gray">{props.index + 1}</span>
-        {authToken && (
+        <span className="gray">{index + 1}</span>
+        {authToken && updateStoreAfterVote && (
           <VoteComponent
-            variables={{ linkId: props.link.id }}
+            variables={{ linkId: link.id }}
             update={(store, mutationResult) => {
-              props.updateStoreAfterVote(store, mutationResult, props.link.id);
+              updateStoreAfterVote(store, mutationResult, link.id);
             }}
           >
             {mutation => (
@@ -46,13 +47,13 @@ export const Link: React.FC<LinkProps> = props => {
       </div>
       <div className="ml1">
         <div>
-          {props.link.description} ({props.link.url})
+          {link.description} ({link.url})
         </div>
         <div className="f6 lh-copy gray">
-          {props.link.votes.length} votes | by{' '}
-          {props.link.postedBy
-            ? props.link.postedBy.name : 'Unknown'}{' '}
-          {timeDifferenceForDate(props.link.createdAt)}
+          {link.votes.length} votes | by{' '}
+          {link.postedBy
+            ? link.postedBy.name : 'Unknown'}{' '}
+          {timeDifferenceForDate(link.createdAt)}
         </div>
       </div>
     </div>

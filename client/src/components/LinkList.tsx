@@ -1,10 +1,8 @@
 import React from 'react';
 
 import { FeedQuery } from '@src/queries/FeedQuery';
-import { Link, UpdateStoreAfterVoteFn } from '@src/components/Link';
+import { Link, UpdateStoreAfterVoteFn  } from '@src/components/Link';
 import { LinkListComponent, LinkListQuery } from '@src/generated/graphql';
-
-interface LinkListProps {}
 
 const updateCacheAfterVote: UpdateStoreAfterVoteFn =
   (store, mutationResult, linkId) => {
@@ -29,6 +27,8 @@ const updateCacheAfterVote: UpdateStoreAfterVoteFn =
 
     store.writeQuery({ query: FeedQuery, data });
   };
+
+interface LinkListProps {}
 
 export const LinkList: React.FC<LinkListProps> = props => {
   return (
