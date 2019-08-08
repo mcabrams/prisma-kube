@@ -15,6 +15,7 @@ export const PostMutation = gql`
       id
     }
     postedBy {
+      id
       name
     }
   }

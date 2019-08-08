@@ -17,6 +17,7 @@ export const FeedQuery = gql`
       id
     }
     postedBy {
+      id
       name
     }
   }
