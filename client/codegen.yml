@@ -9,6 +9,6 @@ generates:
       - typescript-react-apollo
     config:
       withComponent: true
-      withHooks: false
+      withHooks: true
       withHOC: false
 overwrite: true

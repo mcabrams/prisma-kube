@@ -1,6 +1,6 @@
 import React from 'react';
 import { DataProxy } from 'apollo-cache';
-import { FetchResult } from 'react-apollo';
+import { FetchResult } from 'apollo-link';
 
 import { getAuthToken } from '@src/helpers/auth';
 import { timeDifferenceForDate } from '@src/helpers/time';

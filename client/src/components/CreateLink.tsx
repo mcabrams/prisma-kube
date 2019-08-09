@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { DataProxy } from 'apollo-cache';
-import { FetchResult } from 'react-apollo';
+import { FetchResult } from 'apollo-link';
 
 import { LINKS_PER_PAGE } from '@src/constants';
 import {
