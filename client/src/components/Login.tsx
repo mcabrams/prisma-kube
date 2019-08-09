@@ -5,10 +5,10 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import { getAuthToken, setAuthToken } from '@src/helpers/auth';
 import {
-  LoginComponent,
   LoginMutation,
-  SignupComponent,
   SignupMutation,
+  useLoginMutation,
+  useSignupMutation,
 } from '@src/generated/graphql';
 
 interface LoginProps {}
@@ -16,13 +16,12 @@ interface LoginProps {}
 const saveUserData = (token: string) => setAuthToken(token);
 
 export const Login: React.FC<RouteComponentProps<LoginProps>> = props => {
-  const [login, setLogin] = useState(true);
+  const [isLoggedIn, setLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
 
   const confirmLogin = async (data: LoginMutation) => {
-
     /* TODO: Starting here, these should raise errors */
     if (!data.login) {
       return;
@@ -40,8 +39,12 @@ export const Login: React.FC<RouteComponentProps<LoginProps>> = props => {
     props.history.push('/');
   };
 
-  const confirmSignup = async (data: SignupMutation) => {
+  const [login, loginResult] = useLoginMutation({
+    variables: {email, password},
+    onCompleted: data => confirmLogin(data),
+  });
 
+  const confirmSignup = async (data: SignupMutation) => {
     /* TODO: Starting here, these should raise errors */
     if (!data.signup) {
       return;
@@ -59,11 +62,16 @@ export const Login: React.FC<RouteComponentProps<LoginProps>> = props => {
     props.history.push('/');
   };
 
+  const [signup, signupResult] = useSignupMutation({
+    variables: {email, password, name},
+    onCompleted: data => confirmSignup(data),
+  });
+
   return (
     <div>
-      <h4 className="mv3">{login ? 'Login' : 'Sign Up'}</h4>
+      <h4 className="mv3">{isLoggedIn ? 'Login' : 'Sign Up'}</h4>
       <div className="flex flex-column">
-        {!login && (
+        {!isLoggedIn && (
           <input
             type="text"
             value={name}
@@ -85,34 +93,20 @@ export const Login: React.FC<RouteComponentProps<LoginProps>> = props => {
         />
       </div>
       <div className="flex mt3">
-        {login ? (
-          <LoginComponent
-            variables={{ email, password }}
-            onCompleted={data => confirmLogin(data)}
-          >
-            {mutation => (
-              <div className="pointer mr2 button" onClick={() => mutation()}>
-                login
-              </div>
-            )}
-          </LoginComponent>
+        {isLoggedIn ? (
+          <div className="pointer mr2 button" onClick={() => login()}>
+            login
+          </div>
         ) : (
-          <SignupComponent
-            variables={{ email, password, name }}
-            onCompleted={data => confirmSignup(data)}
-          >
-            {mutation => (
-              <div className="pointer mr2 button" onClick={() => mutation()}>
-                create account
-              </div>
-            )}
-          </SignupComponent>
+          <div className="pointer mr2 button" onClick={() => signup()}>
+            create account
+          </div>
         )}
         <div
           className="pointer button"
-          onClick={() => setLogin(!login)}
+          onClick={() => setLogin(!isLoggedIn)}
         >
-          {login
+          {isLoggedIn
             ? 'need to create an account?'
             : 'already have an account?'
           }

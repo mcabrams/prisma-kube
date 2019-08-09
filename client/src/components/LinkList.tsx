@@ -7,7 +7,7 @@ import { NewLinksSubscription } from '@src/queries/NewLinksSubscription';
 import { NewVotesSubscription } from '@src/queries/NewVotesSubscription';
 import { Link, UpdateStoreAfterVoteFn  } from '@src/components/Link';
 import {
-  LinkListComponent, LinkListQuery, LinkOrderByInput,
+  LinkListQuery, LinkOrderByInput, useLinkListQuery,
 } from '@src/generated/graphql';
 import { ObservableQuery } from 'apollo-client';
 
@@ -130,46 +130,41 @@ export const LinkList: React.FC<LinkListProps> = props => {
   };
 
   const updateCacheAfterVote = getUpdateCacheAfterVote(location, match);
+  const { loading, error, data, subscribeToMore } = useLinkListQuery({
+    variables: getFeedQueryVariables(location, match),
+  });
+
+  if (loading) return <div>Fetching</div>;
+  if (error) return <div>Error</div>;
+  if (!data) return <div>No data</div>;
+
+  subscribeToNewLinks(subscribeToMore);
+  subscribeToNewVotes(subscribeToMore);
+  const linksToRender = getLinksToRender(data, location);
+  const isNewPage = getIsNewPage(location);
+  const pageIndex = match.params.page ?
+    (parseInt(match.params.page, 10) - 1) * LINKS_PER_PAGE : 0;
 
   return (
-    <LinkListComponent
-      variables={getFeedQueryVariables(location, match)}
-    >
-      {({ loading, error, data, subscribeToMore }) => {
-        if (loading) return <div>Fetching</div>;
-        if (error) return <div>Error</div>;
-        if (!data) return <div>No data</div>;
-
-        subscribeToNewLinks(subscribeToMore);
-        subscribeToNewVotes(subscribeToMore);
-        const linksToRender = getLinksToRender(data, location);
-        const isNewPage = getIsNewPage(location);
-        const pageIndex = match.params.page ?
-          (parseInt(match.params.page, 10) - 1) * LINKS_PER_PAGE : 0;
-
-        return (
-          <>
-            {linksToRender.map((link, index) => (
-              <Link
-                key={link.id}
-                link={link}
-                index={index + pageIndex}
-                updateStoreAfterVote={updateCacheAfterVote}
-              />
-            ))}
-            {isNewPage && (
-              <div className="flex ml4 mv3 gray">
-                <div className="pointer mr2" onClick={previousPage}>
-                  Previous
-                </div>
-                <div className="pointer" onClick={() => nextPage(data)}>
-                  Next
-                </div>
-              </div>
-            )}
-          </>
-        );
-      }}
-    </LinkListComponent>
+    <>
+      {linksToRender.map((link, index) => (
+        <Link
+          key={link.id}
+          link={link}
+          index={index + pageIndex}
+          updateStoreAfterVote={updateCacheAfterVote}
+        />
+      ))}
+      {isNewPage && (
+        <div className="flex ml4 mv3 gray">
+          <div className="pointer mr2" onClick={previousPage}>
+            Previous
+          </div>
+          <div className="pointer" onClick={() => nextPage(data)}>
+            Next
+          </div>
+        </div>
+      )}
+    </>
   );
 };
