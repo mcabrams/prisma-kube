@@ -5,7 +5,7 @@ import { FetchResult } from 'apollo-link';
 import { getAuthToken } from '@src/helpers/auth';
 import { timeDifferenceForDate } from '@src/helpers/time';
 import {
-  LinkInfoFragment, VoteComponent, VoteMutation,
+  LinkInfoFragment, VoteMutation, useVoteMutation
 } from '@src/generated/graphql';
 
 type VoteMutationResult = FetchResult<VoteMutation>;
@@ -24,6 +24,14 @@ type LinkProps = {
 
 export const Link: React.FC<LinkProps> = props => {
   const { index, link, updateStoreAfterVote } = props;
+
+  const [vote, voteResult] = useVoteMutation({
+    update: (store, mutationResult) => {
+      // @ts-ignore TODO: should only do this if passed as prop (it's optional)
+      updateStoreAfterVote(store, mutationResult, link.id);
+    },
+  });
+
   const authToken = getAuthToken();
   const voteForLink = () => {};
   return (
@@ -31,18 +39,12 @@ export const Link: React.FC<LinkProps> = props => {
       <div className="flex items-center">
         <span className="gray">{index + 1}</span>
         {authToken && updateStoreAfterVote && (
-          <VoteComponent
-            variables={{ linkId: link.id }}
-            update={(store, mutationResult) => {
-              updateStoreAfterVote(store, mutationResult, link.id);
-            }}
+          <div
+            className="ml1 gray f11"
+            onClick={() => vote({ variables: { linkId: link.id }})}
           >
-            {mutation => (
-              <div className="ml1 gray f11" onClick={() => mutation()}>
-                ▲
-              </div>
-            )}
-          </VoteComponent>
+            ▲
+          </div>
         )}
       </div>
       <div className="ml1">
