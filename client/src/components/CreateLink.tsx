@@ -3,8 +3,10 @@ import { RouteComponentProps } from 'react-router-dom';
 import { DataProxy } from 'apollo-cache';
 import { FetchResult } from 'react-apollo';
 
+import { LINKS_PER_PAGE } from '@src/constants';
 import {
   LinkListQuery,
+  LinkOrderByInput,
   PostComponent,
   PostMutation,
 } from '@src/generated/graphql';
@@ -19,7 +21,13 @@ export type UpdateStoreAfterCreateLinkFn = (
 const updateStoreAfterCreateLink: UpdateStoreAfterCreateLinkFn = (
   store, mutationResult,
 ) => {
-  const data = store.readQuery<LinkListQuery>({ query: FeedQuery });
+  const first = LINKS_PER_PAGE;
+  const skip = 0;
+  const orderBy = LinkOrderByInput.CreatedAtDesc;
+  const data = store.readQuery<LinkListQuery>({
+    query: FeedQuery,
+    variables: { skip, first, orderBy },
+  });
 
   // TODO: Should raise error here
   if (!data) {
@@ -35,7 +43,11 @@ const updateStoreAfterCreateLink: UpdateStoreAfterCreateLinkFn = (
   const post = mutationResult.data.post;
 
   data.feed.links.unshift(post);
-  store.writeQuery({ query: FeedQuery, data });
+  store.writeQuery({
+    query: FeedQuery,
+    data,
+    variables: { skip, first, orderBy }
+  });
 };
 
 export const CreateLink: React.FC<RouteComponentProps> = (props) => {
@@ -62,7 +74,7 @@ export const CreateLink: React.FC<RouteComponentProps> = (props) => {
       </div>
       <PostComponent
         variables={{ description, url }}
-        onCompleted={() => props.history.push('/')}
+        onCompleted={() => props.history.push('/new/1')}
         update={(store, mutationResult) => {
           updateStoreAfterCreateLink(store, mutationResult);
         }}

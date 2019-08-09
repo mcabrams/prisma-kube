@@ -1,17 +1,46 @@
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
+import { LINKS_PER_PAGE } from '@src/constants';
 import { FeedQuery } from '@src/queries/FeedQuery';
 import { NewLinksSubscription } from '@src/queries/NewLinksSubscription';
 import { NewVotesSubscription } from '@src/queries/NewVotesSubscription';
 import { Link, UpdateStoreAfterVoteFn  } from '@src/components/Link';
 import {
-  LinkListComponent, LinkListComponentProps, LinkListQuery,
+  LinkListComponent, LinkListQuery, LinkOrderByInput,
 } from '@src/generated/graphql';
 import { ObservableQuery } from 'apollo-client';
 
-const updateCacheAfterVote: UpdateStoreAfterVoteFn =
-  (store, mutationResult, linkId) => {
-    const data = store.readQuery<LinkListQuery>({ query: FeedQuery });
+const getIsNewPage = (location: LinkListProps['location']) =>
+  location.pathname.includes('new');
+
+const getFeedQueryVariables = (
+  location: LinkListProps['location'],
+  match: LinkListProps['match'],
+) => {
+  const isNewPage = getIsNewPage(location);
+  const page = parseInt(match.params.page, 10);
+
+  const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0;
+  const first = isNewPage ?  LINKS_PER_PAGE : 100;
+  const orderBy = isNewPage ? LinkOrderByInput.CreatedAtDesc : null;
+  return { skip, first, orderBy };
+};
+
+
+type GetUpdateCacheAfterVote = (
+  location: LinkListProps['location'],
+  match: LinkListProps['match'],
+) => UpdateStoreAfterVoteFn;
+
+const getUpdateCacheAfterVote: GetUpdateCacheAfterVote = (location, match) => {
+  const variables = getFeedQueryVariables(location, match);
+
+  return (store, mutationResult, linkId) => {
+    const data = store.readQuery<LinkListQuery>({
+      query: FeedQuery,
+      variables,
+    });
 
     // TODO: Should raise error here
     if (!data) {
@@ -23,8 +52,8 @@ const updateCacheAfterVote: UpdateStoreAfterVoteFn =
     // TODO: Should raise error here
     if (!votedLink ||
         !mutationResult ||
-        !mutationResult.data ||
-        !mutationResult.data.vote) {
+          !mutationResult.data ||
+            !mutationResult.data.vote) {
       return;
     }
 
@@ -32,6 +61,7 @@ const updateCacheAfterVote: UpdateStoreAfterVoteFn =
 
     store.writeQuery({ query: FeedQuery, data });
   };
+}
 type LinkListObservableQuery = ObservableQuery<LinkListQuery>
 type SubscribeToMore = LinkListObservableQuery['subscribeToMore'];
 
@@ -66,11 +96,45 @@ const subscribeToNewVotes = (subscribeToMore: SubscribeToMore) => {
   });
 };
 
-interface LinkListProps {}
+const getLinksToRender = (
+  data: LinkListQuery,
+  location: LinkListProps['location']) => {
+  const isNewPage = getIsNewPage(location);
+
+  if (isNewPage) {
+    return data.feed.links;
+  }
+  const rankedLinks = data.feed.links.slice();
+  rankedLinks.sort((l1, l2) => l2.votes.length - l1.votes.length);
+  return rankedLinks;
+};
+
+type LinkListProps = RouteComponentProps<{page: string;}>;
 
 export const LinkList: React.FC<LinkListProps> = props => {
+  const { location, match } = props;
+  const nextPage = (data: LinkListQuery) => {
+    const page = parseInt(match.params.page, 10);
+    if (page <= data.feed.count / LINKS_PER_PAGE) {
+      const nextPage = page + 1;
+      props.history.push(`/new/${nextPage}`);
+    }
+  };
+
+  const previousPage = () => {
+    const page = parseInt(match.params.page, 10);
+    if (page > 1) {
+      const previousPage = page - 1;
+      props.history.push(`/new/${previousPage}`);
+    }
+  };
+
+  const updateCacheAfterVote = getUpdateCacheAfterVote(location, match);
+
   return (
-    <LinkListComponent>
+    <LinkListComponent
+      variables={getFeedQueryVariables(location, match)}
+    >
       {({ loading, error, data, subscribeToMore }) => {
         if (loading) return <div>Fetching</div>;
         if (error) return <div>Error</div>;
@@ -78,19 +142,32 @@ export const LinkList: React.FC<LinkListProps> = props => {
 
         subscribeToNewLinks(subscribeToMore);
         subscribeToNewVotes(subscribeToMore);
-        const linksToRender = data.feed.links;
+        const linksToRender = getLinksToRender(data, location);
+        const isNewPage = getIsNewPage(location);
+        const pageIndex = match.params.page ?
+          (parseInt(match.params.page, 10) - 1) * LINKS_PER_PAGE : 0;
 
         return (
-          <div>
+          <>
             {linksToRender.map((link, index) => (
               <Link
                 key={link.id}
                 link={link}
-                index={index}
+                index={index + pageIndex}
                 updateStoreAfterVote={updateCacheAfterVote}
               />
             ))}
-          </div>
+            {isNewPage && (
+              <div className="flex ml4 mv3 gray">
+                <div className="pointer mr2" onClick={previousPage}>
+                  Previous
+                </div>
+                <div className="pointer" onClick={() => nextPage(data)}>
+                  Next
+                </div>
+              </div>
+            )}
+          </>
         );
       }}
     </LinkListComponent>

@@ -13,6 +13,9 @@ export const PostMutation = gql`
     url
     votes {
       id
+      user {
+        id
+      }
     }
     postedBy {
       id

@@ -1,11 +1,12 @@
 import gql from 'graphql-tag';
 
 export const FeedQuery = gql`
-  query LinkList {
-    feed {
+  query LinkList($first: Int, $skip: Int, $orderBy: LinkOrderByInput) {
+    feed(first: $first, skip: $skip, orderBy: $orderBy) {
       links {
         ...LinkInfo
       }
+      count
     }
   }
   fragment LinkInfo on Link {
@@ -15,6 +16,9 @@ export const FeedQuery = gql`
     url
     votes {
       id
+      user {
+        id
+      }
     }
     postedBy {
       id
