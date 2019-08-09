@@ -10,6 +10,7 @@ docker-compose build
 docker-compose up -d
 ```
 
+Open localhost:8080 in your browser.
 
 ### Kubernetes
 
