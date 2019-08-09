@@ -7,8 +7,8 @@ import { LINKS_PER_PAGE } from '@src/constants';
 import {
   LinkListQuery,
   LinkOrderByInput,
-  PostComponent,
   PostMutation,
+  usePostMutation,
 } from '@src/generated/graphql';
 import { FeedQuery } from '@src/queries/FeedQuery';
 
@@ -53,6 +53,15 @@ const updateStoreAfterCreateLink: UpdateStoreAfterCreateLinkFn = (
 export const CreateLink: React.FC<RouteComponentProps> = (props) => {
   const [description, setDescription] = useState('');
   const [url, setUrl] = useState('');
+  const [post, postResult] = usePostMutation({
+    variables: { description, url },
+    onCompleted: () => props.history.push('/new/1'),
+    update: (store, mutationResult) => {
+      updateStoreAfterCreateLink(store, mutationResult);
+    },
+  });
+
+  const { error } = postResult;
 
   return (
     <div>
@@ -72,24 +81,10 @@ export const CreateLink: React.FC<RouteComponentProps> = (props) => {
           placeholder="The URL for the link"
         />
       </div>
-      <PostComponent
-        variables={{ description, url }}
-        onCompleted={() => props.history.push('/new/1')}
-        update={(store, mutationResult) => {
-          updateStoreAfterCreateLink(store, mutationResult);
-        }}
-      >
-        {
-          (postMutation, { error }) => (
-            <>
-              <button onClick={() => {postMutation()}}>
-                Submit
-              </button>
-              {error && <p>Uh oh, something went wrong!</p>}
-            </>
-          )
-        }
-      </PostComponent>
+      <button onClick={() => {post()}}>
+        Submit
+      </button>
+      {error && <p>Uh oh, something went wrong!</p>}
     </div>
   );
 }
