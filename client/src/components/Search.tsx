@@ -1,31 +1,41 @@
 import React, { useState } from 'react';
-import { WithApolloClient, withApollo } from 'react-apollo';
-
+import { useLazyQuery } from '@apollo/react-hooks';
 import { LinkInfo } from '@src/components/LinkInfo';
-import { FeedSearchQueryQuery, LinkInfoFragment } from '@src/generated/graphql';
+
+import {
+  FeedSearchQueryQuery,
+  FeedSearchQueryQueryVariables,
+  LinkInfoFragment,
+} from '@src/generated/graphql';
 import { FeedSearchQuery } from '@src/queries/FeedSearchQuery';
 
 interface SearchProps {}
 
-const SearchWithoutApollo: React.FC<WithApolloClient<SearchProps>> = props => {
+export const Search: React.FC<SearchProps> = () => {
   const [links, setLinks] = useState<LinkInfoFragment[]>([]);
   const [filter, setFilter] = useState('');
-
-  const executeSearch = async () => {
-    const result = await props.client.query<FeedSearchQueryQuery>({
-      query: FeedSearchQuery,
-      variables: { filter },
-    });
-    const feedLinks = result.data.feed.links;
-    setLinks(feedLinks);
-  };
+  const [search, _] = (
+    useLazyQuery<FeedSearchQueryQuery, FeedSearchQueryQueryVariables>(
+      FeedSearchQuery,
+      {
+        onCompleted: data => setLinks(data.feed.links),
+      },
+    )
+  );
 
   return (
     <div>
       <div>
         Search
         <input type="text" onChange={e => setFilter(e.target.value)} />
-        <button type="submit" onClick={() => executeSearch()}>OK</button>
+        <button
+          type="submit"
+          onClick={() => search({
+            variables: { filter },
+          })}
+        >
+          OK
+        </button>
       </div>
       {links.map((link, index) => (
         <LinkInfo
@@ -37,5 +47,3 @@ const SearchWithoutApollo: React.FC<WithApolloClient<SearchProps>> = props => {
     </div>
   );
 };
-
-export const Search = withApollo(SearchWithoutApollo);
