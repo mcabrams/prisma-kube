@@ -17,4 +17,4 @@ export const env = (property: string) => {
 
   // @ts-ignore TODO: Fix this
   return window._env_[property];
-}
+};

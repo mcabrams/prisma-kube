@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { WithApolloClient, withApollo } from 'react-apollo';
 
-import { Link, UpdateStoreAfterVoteFn  } from '@src/components/Link';
+import { LinkInfo } from '@src/components/LinkInfo';
 import { FeedSearchQueryQuery, LinkInfoFragment } from '@src/generated/graphql';
 import { FeedSearchQuery } from '@src/queries/FeedSearchQuery';
 
 interface SearchProps {}
 
-const SearchWithoutApollo: React.FC<WithApolloClient<SearchProps>> = props => {
+const SearchWithoutApollo: React.FC<WithApolloClient<SearchProps>> = (props) => {
   const [links, setLinks] = useState<LinkInfoFragment[]>([]);
   const [filter, setFilter] = useState('');
 
@@ -16,8 +16,8 @@ const SearchWithoutApollo: React.FC<WithApolloClient<SearchProps>> = props => {
       query: FeedSearchQuery,
       variables: { filter },
     });
-    const links = result.data.feed.links;
-    setLinks(links);
+    const feedLinks = result.data.feed.links;
+    setLinks(feedLinks);
   };
 
   return (
@@ -25,10 +25,10 @@ const SearchWithoutApollo: React.FC<WithApolloClient<SearchProps>> = props => {
       <div>
         Search
         <input type="text" onChange={e => setFilter(e.target.value)} />
-        <button onClick={() => executeSearch()}>OK</button>
+        <button type="submit" onClick={() => executeSearch()}>OK</button>
       </div>
       {links.map((link, index) => (
-        <Link
+        <LinkInfo
           key={link.id}
           link={link}
           index={index}

@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { Mutation } from 'react-apollo'
-import gql from 'graphql-tag'
 import { RouteComponentProps } from 'react-router-dom';
 
-import { getAuthToken, setAuthToken } from '@src/helpers/auth';
+import { setAuthToken } from '@src/helpers/auth';
 import {
   LoginMutation,
   SignupMutation,
@@ -15,7 +13,7 @@ interface LoginProps {}
 
 const saveUserData = (token: string) => setAuthToken(token);
 
-export const Login: React.FC<RouteComponentProps<LoginProps>> = props => {
+export const Login: React.FC<RouteComponentProps<LoginProps>> = (props) => {
   const [isLoggedIn, setLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,8 +37,8 @@ export const Login: React.FC<RouteComponentProps<LoginProps>> = props => {
     props.history.push('/');
   };
 
-  const [login, loginResult] = useLoginMutation({
-    variables: {email, password},
+  const [login, _] = useLoginMutation({
+    variables: { email, password },
     onCompleted: data => confirmLogin(data),
   });
 
@@ -62,8 +60,8 @@ export const Login: React.FC<RouteComponentProps<LoginProps>> = props => {
     props.history.push('/');
   };
 
-  const [signup, signupResult] = useSignupMutation({
-    variables: {email, password, name},
+  const [signup, __] = useSignupMutation({
+    variables: { email, password, name },
     onCompleted: data => confirmSignup(data),
   });
 
@@ -94,23 +92,24 @@ export const Login: React.FC<RouteComponentProps<LoginProps>> = props => {
       </div>
       <div className="flex mt3">
         {isLoggedIn ? (
-          <div className="pointer mr2 button" onClick={() => login()}>
+          <button type="submit" className="pointer mr2 button" onClick={() => login()}>
             login
-          </div>
+          </button>
         ) : (
-          <div className="pointer mr2 button" onClick={() => signup()}>
+          <button type="submit" className="pointer mr2 button" onClick={() => signup()}>
             create account
-          </div>
+          </button>
         )}
-        <div
+        <button
           className="pointer button"
           onClick={() => setLogin(!isLoggedIn)}
+          type="button"
         >
           {isLoggedIn
             ? 'need to create an account?'
             : 'already have an account?'
           }
-        </div>
+        </button>
       </div>
     </div>
   );

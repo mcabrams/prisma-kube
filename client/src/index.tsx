@@ -20,8 +20,8 @@ const wsLink = new WebSocketLink({
     reconnect: true,
     connectionParams: {
       authToken: getAuthToken(),
-    }
-  }
+    },
+  },
 });
 
 const httpLink = createHttpLink({

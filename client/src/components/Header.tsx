@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 
 import { getAuthToken, removeAuthToken } from '@src/helpers/auth';
 
-const HeaderWithoutRouter: React.FC<RouteComponentProps> = props => {
+const HeaderWithoutRouter: React.FC<RouteComponentProps> = (props) => {
   const authToken = getAuthToken();
 
   const logout = () => {
@@ -37,12 +37,13 @@ const HeaderWithoutRouter: React.FC<RouteComponentProps> = props => {
         )}
         <div className="flex flex-fixed">
           {authToken ? (
-            <div
+            <button
               className="ml1 pointer black"
               onClick={() => logout()}
+              type="button"
             >
               logout
-            </div>
+            </button>
           ) : (
             <Link to="/login" className="ml1 no-underline black">
               login
@@ -52,6 +53,6 @@ const HeaderWithoutRouter: React.FC<RouteComponentProps> = props => {
       </div>
     </div>
   );
-}
+};
 
 export const Header = withRouter(HeaderWithoutRouter);

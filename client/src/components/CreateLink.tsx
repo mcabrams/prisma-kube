@@ -35,18 +35,18 @@ const updateStoreAfterCreateLink: UpdateStoreAfterCreateLinkFn = (
   }
 
   // TODO: Should raise error here
-  if (!mutationResult ||
-      !mutationResult.data ||
-      !mutationResult.data.post) {
+  if (!mutationResult
+      || !mutationResult.data
+      || !mutationResult.data.post) {
     return;
   }
-  const post = mutationResult.data.post;
+  const { post } = mutationResult.data;
 
   data.feed.links.unshift(post);
   store.writeQuery({
     query: FeedQuery,
     data,
-    variables: { skip, first, orderBy }
+    variables: { skip, first, orderBy },
   });
 };
 
@@ -81,10 +81,10 @@ export const CreateLink: React.FC<RouteComponentProps> = (props) => {
           placeholder="The URL for the link"
         />
       </div>
-      <button onClick={() => {post()}}>
+      <button type="submit" onClick={() => { post(); }}>
         Submit
       </button>
       {error && <p>Uh oh, something went wrong!</p>}
     </div>
   );
-}
+};
