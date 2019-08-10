@@ -7,7 +7,7 @@ import { FeedSearchQuery } from '@src/queries/FeedSearchQuery';
 
 interface SearchProps {}
 
-const SearchWithoutApollo: React.FC<WithApolloClient<SearchProps>> = (props) => {
+const SearchWithoutApollo: React.FC<WithApolloClient<SearchProps>> = props => {
   const [links, setLinks] = useState<LinkInfoFragment[]>([]);
   const [filter, setFilter] = useState('');
 

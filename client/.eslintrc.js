@@ -12,6 +12,7 @@ module.exports = {
     'react/jsx-filename-extension': [2, { 'extensions': ['.jsx', '.tsx'] }], // support tsx
     'import/prefer-default-export': 0, // I prefer named exports so never confusion
     'no-underscore-dangle': ['error', { 'allow': ['_env_', '__typename'] }], // allow underscore dangle only for specified
+    'arrow-parens': ['error', 'as-needed'], // only require parens on arrow function if needed
     'react/prop-types': 0, // This is handled by typescript
     'import/no-unresolved': 0, // This is handled by typescript
     'no-unused-vars': 0, // use typescript alternative

@@ -50,7 +50,7 @@ const updateStoreAfterCreateLink: UpdateStoreAfterCreateLinkFn = (
   });
 };
 
-export const CreateLink: React.FC<RouteComponentProps> = (props) => {
+export const CreateLink: React.FC<RouteComponentProps> = props => {
   const [description, setDescription] = useState('');
   const [url, setUrl] = useState('');
   const [post, postResult] = usePostMutation({

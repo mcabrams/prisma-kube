@@ -13,7 +13,7 @@ interface LoginProps {}
 
 const saveUserData = (token: string) => setAuthToken(token);
 
-export const Login: React.FC<RouteComponentProps<LoginProps>> = (props) => {
+export const Login: React.FC<RouteComponentProps<LoginProps>> = props => {
   const [isLoggedIn, setLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -107,8 +107,7 @@ export const Login: React.FC<RouteComponentProps<LoginProps>> = (props) => {
         >
           {isLoggedIn
             ? 'need to create an account?'
-            : 'already have an account?'
-          }
+            : 'already have an account?'}
         </button>
       </div>
     </div>

@@ -22,7 +22,7 @@ type LinkInfoProps = {
   updateStoreAfterVote?: UpdateStoreAfterVoteFn;
 };
 
-export const LinkInfo: React.FC<LinkInfoProps> = (props) => {
+export const LinkInfo: React.FC<LinkInfoProps> = props => {
   const { index, link, updateStoreAfterVote } = props;
 
   const [vote, _] = useVoteMutation({

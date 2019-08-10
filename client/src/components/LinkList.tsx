@@ -78,13 +78,14 @@ const subscribeToNewLinks = (subscribeToMore: SubscribeToMore) => {
         return prev;
       }
 
-      return Object.assign({}, prev, {
+      return {
+        ...prev,
         feed: {
           links: [newLink, ...prev.feed.links],
           count: prev.feed.links.length + 1,
           __typename: prev.feed.__typename,
         },
-      });
+      };
     },
   });
 };
@@ -111,7 +112,7 @@ const getLinksToRender = (
 
 type LinkListProps = RouteComponentProps<{page: string;}>;
 
-export const LinkList: React.FC<LinkListProps> = (props) => {
+export const LinkList: React.FC<LinkListProps> = props => {
   const { location, match } = props;
   const nextPage = (data: LinkListQuery) => {
     const page = parseInt(match.params.page, 10);

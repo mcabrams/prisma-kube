@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 
 import { getAuthToken, removeAuthToken } from '@src/helpers/auth';
 
-const HeaderWithoutRouter: React.FC<RouteComponentProps> = (props) => {
+const HeaderWithoutRouter: React.FC<RouteComponentProps> = props => {
   const authToken = getAuthToken();
 
   const logout = () => {
