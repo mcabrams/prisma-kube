@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 
+import { LINK_INFO_FRAGMENT } from '@src/queries/LINK_INFO_FRAGMENT';
+
 export const NEW_VOTES_SUBSCRIPTION = gql`
   subscription NewVotes {
     newVote {
@@ -9,23 +11,11 @@ export const NEW_VOTES_SUBSCRIPTION = gql`
   fragment NewVoteFragment on Vote {
     id
     link {
-      id
-      url
-      description
-      createdAt
-      postedBy {
-        id
-        name
-      }
-      votes {
-        id
-        user {
-          id
-        }
-      }
+      ...LinkInfo
     }
     user {
       id
     }
   }
+  ${LINK_INFO_FRAGMENT}
 `;

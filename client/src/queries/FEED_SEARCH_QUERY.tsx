@@ -1,27 +1,14 @@
 import gql from 'graphql-tag';
 
+import { LINK_INFO_FRAGMENT } from '@src/queries/LINK_INFO_FRAGMENT';
+
 export const FEED_SEARCH_QUERY = gql`
   query FeedSearch($filter: String!) {
     feed(filter: $filter) {
       links {
-        ...LinkSearchInfo
+        ...LinkInfo
       }
     }
   }
-  fragment LinkSearchInfo on Link {
-    id
-    url
-    description
-    createdAt
-    postedBy {
-      id
-      name
-    }
-    votes {
-      id
-      user {
-        id
-      }
-    }
-  }
+  ${LINK_INFO_FRAGMENT}
 `;

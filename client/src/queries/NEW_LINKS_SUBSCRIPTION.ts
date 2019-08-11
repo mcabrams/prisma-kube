@@ -1,25 +1,12 @@
 import gql from 'graphql-tag';
 
+import { LINK_INFO_FRAGMENT } from '@src/queries/LINK_INFO_FRAGMENT';
+
 export const NEW_LINKS_SUBSCRIPTION = gql`
   subscription NewLinks {
     newLink {
-      ...LinkFragment
+      ...LinkInfo
     }
   }
-  fragment LinkFragment on Link {
-    id
-    createdAt
-    description
-    url
-    votes {
-      id
-      user {
-        id
-      }
-    }
-    postedBy {
-      id
-      name
-    }
-  }
+  ${LINK_INFO_FRAGMENT}
 `;
