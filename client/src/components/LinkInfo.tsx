@@ -52,14 +52,12 @@ export const LinkInfo: React.FC<LinkInfoProps> = props => {
         <div>
           {link.description}
           {' '}
-(
           {link.url}
-)
         </div>
         <div className="f6 lh-copy gray">
           {link.votes.length}
           {' '}
-votes | by
+          votes | by
           {' '}
           {link.postedBy
             ? link.postedBy.name : 'Unknown'}
