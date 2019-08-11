@@ -10,7 +10,7 @@ import {
   PostMutation,
   usePostMutation,
 } from '@src/generated/graphql';
-import { FeedQuery } from '@src/queries/FeedQuery';
+import { LINK_LIST_QUERY } from '@src/queries/LINK_LIST_QUERY';
 
 type PostMutationResult = FetchResult<PostMutation>;
 export type UpdateStoreAfterCreateLinkFn = (
@@ -25,7 +25,7 @@ const updateStoreAfterCreateLink: UpdateStoreAfterCreateLinkFn = (
   const skip = 0;
   const orderBy = LinkOrderByInput.CreatedAtDesc;
   const data = store.readQuery<LinkListQuery>({
-    query: FeedQuery,
+    query: LINK_LIST_QUERY,
     variables: { skip, first, orderBy },
   });
 
@@ -44,7 +44,7 @@ const updateStoreAfterCreateLink: UpdateStoreAfterCreateLinkFn = (
 
   data.feed.links.unshift(post);
   store.writeQuery({
-    query: FeedQuery,
+    query: LINK_LIST_QUERY,
     data,
     variables: { skip, first, orderBy },
   });

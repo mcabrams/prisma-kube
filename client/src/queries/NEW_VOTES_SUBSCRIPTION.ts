@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const NewVotesSubscription = gql`
+export const NEW_VOTES_SUBSCRIPTION = gql`
   subscription NewVotes {
     newVote {
       ...NewVoteFragment

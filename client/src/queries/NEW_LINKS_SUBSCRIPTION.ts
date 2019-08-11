@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const NewLinksSubscription = gql`
+export const NEW_LINKS_SUBSCRIPTION = gql`
   subscription NewLinks {
     newLink {
       ...LinkFragment

@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const VoteMutation = gql`
+export const VOTE_MUTATION = gql`
   mutation Vote($linkId: ID!) {
     vote(linkId: $linkId) {
       ...VoteResponse

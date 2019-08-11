@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const FeedQuery = gql`
+export const LINK_LIST_QUERY = gql`
   query LinkList($first: Int, $skip: Int, $orderBy: LinkOrderByInput) {
     feed(first: $first, skip: $skip, orderBy: $orderBy) {
       links {

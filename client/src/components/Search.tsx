@@ -3,11 +3,11 @@ import { useLazyQuery } from '@apollo/react-hooks';
 import { LinkInfo } from '@src/components/LinkInfo';
 
 import {
-  FeedSearchQueryQuery,
-  FeedSearchQueryQueryVariables,
+  FeedSearchQuery,
+  FeedSearchQueryVariables,
   LinkInfoFragment,
 } from '@src/generated/graphql';
-import { FeedSearchQuery } from '@src/queries/FeedSearchQuery';
+import { FEED_SEARCH_QUERY } from '@src/queries/FEED_SEARCH_QUERY';
 
 interface SearchProps {}
 
@@ -15,8 +15,8 @@ export const Search: React.FC<SearchProps> = () => {
   const [links, setLinks] = useState<LinkInfoFragment[]>([]);
   const [filter, setFilter] = useState('');
   const [search, _] = (
-    useLazyQuery<FeedSearchQueryQuery, FeedSearchQueryQueryVariables>(
-      FeedSearchQuery,
+    useLazyQuery<FeedSearchQuery, FeedSearchQueryVariables>(
+      FEED_SEARCH_QUERY,
       {
         onCompleted: data => setLinks(data.feed.links),
       },

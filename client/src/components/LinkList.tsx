@@ -2,9 +2,9 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { LINKS_PER_PAGE } from '@src/constants';
-import { FeedQuery } from '@src/queries/FeedQuery';
-import { NewLinksSubscription } from '@src/queries/NewLinksSubscription';
-import { NewVotesSubscription } from '@src/queries/NewVotesSubscription';
+import { LINK_LIST_QUERY } from '@src/queries/LINK_LIST_QUERY';
+import { NEW_LINKS_SUBSCRIPTION } from '@src/queries/NEW_LINKS_SUBSCRIPTION';
+import { NEW_VOTES_SUBSCRIPTION } from '@src/queries/NEW_VOTES_SUBSCRIPTION';
 import { LinkInfo, UpdateStoreAfterVoteFn } from '@src/components/LinkInfo';
 import {
   LinkListQuery, LinkOrderByInput, useLinkListQuery,
@@ -13,7 +13,7 @@ import { ObservableQuery } from 'apollo-client';
 
 const getIsNewPage = (location: LinkListProps['location']) => location.pathname.includes('new');
 
-const getFeedQueryVariables = (
+const getLinkListVariables = (
   location: LinkListProps['location'],
   match: LinkListProps['match'],
 ) => {
@@ -33,11 +33,11 @@ type GetUpdateCacheAfterVote = (
 ) => UpdateStoreAfterVoteFn;
 
 const getUpdateCacheAfterVote: GetUpdateCacheAfterVote = (location, match) => {
-  const variables = getFeedQueryVariables(location, match);
+  const variables = getLinkListVariables(location, match);
 
   return (store, mutationResult, linkId) => {
     const data = store.readQuery<LinkListQuery>({
-      query: FeedQuery,
+      query: LINK_LIST_QUERY,
       variables,
     });
 
@@ -58,7 +58,7 @@ const getUpdateCacheAfterVote: GetUpdateCacheAfterVote = (location, match) => {
 
     votedLink.votes = mutationResult.data.vote.link.votes;
 
-    store.writeQuery({ query: FeedQuery, data });
+    store.writeQuery({ query: LINK_LIST_QUERY, data });
   };
 };
 type LinkListObservableQuery = ObservableQuery<LinkListQuery>
@@ -66,7 +66,7 @@ type SubscribeToMore = LinkListObservableQuery['subscribeToMore'];
 
 const subscribeToNewLinks = (subscribeToMore: SubscribeToMore) => {
   subscribeToMore({
-    document: NewLinksSubscription,
+    document: NEW_LINKS_SUBSCRIPTION,
     updateQuery: (prev, { subscriptionData }) => {
       if (!subscriptionData.data) {
         return prev;
@@ -92,7 +92,7 @@ const subscribeToNewLinks = (subscribeToMore: SubscribeToMore) => {
 
 const subscribeToNewVotes = (subscribeToMore: SubscribeToMore) => {
   subscribeToMore({
-    document: NewVotesSubscription,
+    document: NEW_VOTES_SUBSCRIPTION,
   });
 };
 
@@ -134,7 +134,7 @@ export const LinkList: React.FC<LinkListProps> = props => {
   const {
     loading, error, data, subscribeToMore,
   } = useLinkListQuery({
-    variables: getFeedQueryVariables(location, match),
+    variables: getLinkListVariables(location, match),
   });
 
   if (loading) return <div>Fetching</div>;
