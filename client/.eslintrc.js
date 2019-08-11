@@ -11,6 +11,14 @@ module.exports = {
     'jsx-a11y/click-events-have-key-events': 0, // Didn't quite understand this rule; enter key seems to work OK
     'react/jsx-filename-extension': [2, { 'extensions': ['.jsx', '.tsx'] }], // support tsx
     'import/prefer-default-export': 0, // I prefer named exports so never confusion
+
+    // TODO: fix when https://github.com/benmosher/eslint-plugin-import/issues/807 solved
+    // 'import/newline-after-import': ['error', { 'count': 1 }], // force 1 new line after imports
+    // 'import/order': ['error', {
+      // 'groups': ['index', 'sibling', 'parent', 'internal', 'external', 'builtin'], // Ensure grouped imports
+      // 'newlines-between': 'always', // Ensure newlines between groups
+    // }],
+
     'no-underscore-dangle': ['error', { 'allow': ['_env_', '__typename'] }], // allow underscore dangle only for specified
     'arrow-parens': ['error', 'as-needed'], // only require parens on arrow function if needed
     'react/prop-types': 0, // This is handled by typescript
