@@ -10,7 +10,7 @@ module.exports = {
   devtool: 'inline-source-map',
   plugins: [
     new ForkTsCheckerWebpackPlugin({
-      // tslint: true,
+      eslint: true,
       useTypescriptIncrementalApi: true,
     }),
     new ForkTsCheckerNotifierWebpackPlugin({
@@ -31,7 +31,7 @@ module.exports = {
           options: { transpileOnly: true },
         },
         exclude: /node_modules/
-      }
+      },
     ]
   },
   resolve: {
