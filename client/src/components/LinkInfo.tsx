@@ -34,7 +34,7 @@ export const LinkInfo: React.FC<LinkInfoProps> = props => {
 
   const authToken = getAuthToken();
   return (
-    <div className="flex mt2 items-start">
+    <div className="flex mt2 items-start" data-testid="link-info">
       <div className="flex items-center">
         <span className="gray">{index + 1}</span>
         {authToken && updateStoreAfterVote && (
